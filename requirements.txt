@@ -1,0 +1,8 @@
+pandas
+spacy
+neo4j
+elasticsearch
+streamlit
+pyvis
+rapidfuzz
+sentence-transformers
