@@ -35,13 +35,11 @@ def create_es_index():
             "embedding": {"type": "dense_vector", "dims": 384}
         }
     }
-    # Try to create the index and ignore the error if it already exists (400)
     try:
         es.indices.create(index=index_name, mappings=mapping, ignore=[400])
         logging.info(f"Created or verified Elasticsearch index '{index_name}'.")
     except Exception as e:
         logging.error(f"Could not create or verify Elasticsearch index: {e}")
-
 
 def index_doc(doc_id, text, metadata):
     """Generates embedding and indexes a document into Elasticsearch."""
@@ -105,8 +103,8 @@ if __name__ == '__main__':
         exit()
 
     with neo_driver.session() as session:
-        existing__orgs = session.read_transaction(get_existing_entities, 'ORG')
-        existing_gpes = session.read_transaction(get_existing_entities, 'GPE')
+        existing_orgs = session.execute_read(get_existing_entities, 'ORG')
+        existing_gpes = session.execute_read(get_existing_entities, 'GPE')
 
         for _, row in df.iterrows():
             text = row.get('notes', '')
@@ -115,25 +113,25 @@ if __name__ == '__main__':
             index_doc(doc_id, text, row.to_dict())
             ents = extract_entities(text)
 
-            session.write_transaction(lambda tx: tx.run("MERGE (p:Person {id: $id}) SET p.name = $name", id=doc_id, name=row['name']))
+            session.execute_write(lambda tx: tx.run("MERGE (p:Person {id: $id}) SET p.name = $name", id=doc_id, name=row['name']))
 
             entities_map = {}
             for ent_text, ent_label in ents:
                 ent_id, newly_created = (None, False)
                 if ent_label == 'ORG':
-                    ent_id, newly_created = session.write_transaction(resolve_and_upsert_entity, 'ORG', ent_text, existing_orgs)
+                    ent_id, newly_created = session.execute_write(resolve_and_upsert_entity, 'ORG', ent_text, existing_orgs)
                     if newly_created: existing_orgs[ent_text] = ent_id
                 elif ent_label == 'GPE':
-                    ent_id, newly_created = session.write_transaction(resolve_and_upsert_entity, 'GPE', ent_text, existing_gpes)
+                    ent_id, newly_created = session.execute_write(resolve_and_upsert_entity, 'GPE', ent_text, existing_gpes)
                     if newly_created: existing_gpes[ent_text] = ent_id
                 else:
                     ent_id = str(hash(ent_text.lower()))
-                    session.write_transaction(lambda tx: tx.run(f"MERGE (e:{ent_label} {{id: $id}}) SET e.name = $name", id=ent_id, name=ent_text))
+                    session.execute_write(lambda tx: tx.run(f"MERGE (e:{ent_label} {{id: $id}}) SET e.name = $name", id=ent_id, name=ent_text))
 
                 if ent_id:
                     entities_map[ent_id] = (ent_text, ent_label)
-                    session.write_transaction(create_relationship, 'Person', doc_id, ent_label, ent_id, 'MENTIONED')
+                    session.execute_write(create_relationship, 'Person', doc_id, ent_label, ent_id, 'MENTIONED')
 
-            session.write_transaction(extract_and_create_specific_relationships, doc_id, text, entities_map)
+            session.execute_write(extract_and_create_specific_relationships, doc_id, text, entities_map)
 
     logging.info("Data ingestion complete.")
