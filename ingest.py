@@ -28,16 +28,20 @@ neo_driver = GraphDatabase.driver('bolt://localhost:7687', auth=('neo4j', 'neo4j
 def create_es_index():
     """Creates the Elasticsearch index with a specific mapping for vector search."""
     index_name = 'docs'
-    if not es.indices.exists(index=index_name):
-        mapping = {
-            "properties": {
-                "text": {"type": "text"},
-                "meta": {"type": "object"},
-                "embedding": {"type": "dense_vector", "dims": 384}
-            }
+    mapping = {
+        "properties": {
+            "text": {"type": "text"},
+            "meta": {"type": "object"},
+            "embedding": {"type": "dense_vector", "dims": 384}
         }
-        es.indices.create(index=index_name, mappings=mapping)
-        logging.info(f"Created Elasticsearch index '{index_name}' with vector mapping.")
+    }
+    # Try to create the index and ignore the error if it already exists (400)
+    try:
+        es.indices.create(index=index_name, mappings=mapping, ignore=[400])
+        logging.info(f"Created or verified Elasticsearch index '{index_name}'.")
+    except Exception as e:
+        logging.error(f"Could not create or verify Elasticsearch index: {e}")
+
 
 def index_doc(doc_id, text, metadata):
     """Generates embedding and indexes a document into Elasticsearch."""
@@ -101,7 +105,7 @@ if __name__ == '__main__':
         exit()
 
     with neo_driver.session() as session:
-        existing_orgs = session.read_transaction(get_existing_entities, 'ORG')
+        existing__orgs = session.read_transaction(get_existing_entities, 'ORG')
         existing_gpes = session.read_transaction(get_existing_entities, 'GPE')
 
         for _, row in df.iterrows():
