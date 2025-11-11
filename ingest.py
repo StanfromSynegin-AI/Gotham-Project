@@ -23,7 +23,7 @@ except OSError:
 embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
 
 # Connections
-es = Elasticsearch('http://localhost:9200', headers={"Accept": "application/vnd.elasticsearch+json; compatible-with=8"})
+es = Elasticsearch('http://localhost:9200')
 neo_driver = GraphDatabase.driver('bolt://localhost:7687', auth=('neo4j', 'neo4jpassword'))
 
 def create_es_index():

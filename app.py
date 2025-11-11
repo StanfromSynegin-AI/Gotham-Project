@@ -39,7 +39,7 @@ def get_graph_data(_driver):
 
 # --- Connections & Models ---
 embedding_model = load_embedding_model()
-es = Elasticsearch('http://localhost:9200', headers={"Accept": "application/vnd.elasticsearch+json; compatible-with=8"})
+es = Elasticsearch('http://localhost:9200')
 neo_driver = GraphDatabase.driver('bolt://localhost:7687', auth=('neo4j', 'neo4jpassword'))
 
 # --- UI ---
