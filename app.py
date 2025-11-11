@@ -8,133 +8,122 @@ import pandas as pd
 import json
 
 # --- Page Config ---
-st.set_page_config(layout="wide", page_title="Mini-Gotham")
+st.set_page_config(layout="wide", page_title="Mini-Gotham Intelligence Platform")
 
 # --- Caching & Data Loading ---
 @st.cache_resource
-def load_embedding_model():
-    return SentenceTransformer('all-MiniLM-L6-v2')
-
+def load_embedding_model(): return SentenceTransformer('all-MiniLM-L6-v2')
+@st.cache_data
+def load_data():
+    try:
+        with open('dossiers.json', 'r') as f: dossiers = json.load(f)
+        with open('events.json', 'r') as f: events = json.load(f)
+        return dossiers, events
+    except FileNotFoundError: return [], []
 @st.cache_data
 def get_graph_data(_driver):
     def work(tx):
-        nodes_result = tx.run("MATCH (n) RETURN n")
-        rels_result = tx.run("MATCH ()-[r]->() RETURN r, startNode(r) as start, endNode(r) as end")
-        nodes, edges = [], []
-        node_ids = set()
-        for record in nodes_result:
+        result = tx.run("MATCH (n) RETURN n")
+        nodes = []
+        for record in result:
             node = record["n"]
             properties = dict(node)
-            node_id = properties.get("id")
-            if node_id not in node_ids:
-                properties["label_text"] = properties.get("name", "Unknown")
-                properties["node_label"] = list(node.labels)[0]
-                nodes.append(properties)
-                node_ids.add(node_id)
-        for r in rels_result:
-            edges.append({"from": r["start"].get("id"), "to": r["end"].get("id"), "label": type(r["r"]).__name__})
-        return nodes, edges
-    with _driver.session() as session:
-        return session.execute_read(work)
+            properties["label"] = list(node.labels)[0]
+            nodes.append(properties)
 
-@st.cache_data
-def get_filter_options():
-    try:
-        with open('dossiers.json', 'r') as f:
-            dossiers = json.load(f)
-        nationalities = sorted(list(set(d['Nationality'] for d in dossiers)))
-        statuses = sorted(list(set(d['Status'] for d in dossiers)))
-        return nationalities, statuses
-    except FileNotFoundError:
-        return [], []
+        result = tx.run("MATCH ()-[r]->() RETURN r, startNode(r) as start, endNode(r) as end")
+        edges = [{"from": r["start"].get("id"), "to": r["end"].get("id"), "label": type(r["r"]).__name__} for r in result]
+        return nodes, edges
+    with _driver.session() as session: return session.execute_read(work)
 
 # --- Connections & Models ---
 embedding_model = load_embedding_model()
-es = Elasticsearch('http://localhost:9200', headers={"Accept": "application/vnd.elasticsearch+json; compatible-with=8"})
-neo_driver = GraphDatabase.driver('bolt://localhost:7687', auth=('neoj', 'neo4jpassword'))
-INDEX_NAME = "intelligence_dossiers"
+es = Elasticsearch('http://localhost:9200')
+neo_driver = GraphDatabase.driver('bolt://localhost:7687', auth=('neo4j', 'neo4jpassword'))
+dossiers, events = load_data()
 
-# --- Sidebar Filters ---
-st.sidebar.title("Search Filters")
-nationalities, statuses = get_filter_options()
-selected_nationalities = st.sidebar.multiselect("Nationality", nationalities)
-selected_statuses = st.sidebar.multiselect("Status", statuses)
+# --- Main App ---
+st.title("Intelligence Analysis Platform")
 
-# --- Main UI ---
-st.title("Mini-Gotham: Intelligence Dashboard")
-st.markdown("Explore the network of connections and search the dossier database.")
+tab1, tab2, tab3 = st.tabs(["Dossier Search", "Timeline Analysis", "Graph Explorer"])
 
-# --- Search Section ---
-def build_es_query(query_text, filters):
-    query = {"bool": {"must": [], "filter": []}}
-    if query_text:
-        query["bool"]["must"].append({"multi_match": {"query": query_text, "fields": ["name", "notes"]}})
-    else:
-        query["bool"]["must"].append({"match_all": {}})
+# --- Tab 1: Dossier Search ---
+with tab1:
+    st.header("Search and Filter Dossiers")
 
-    for nat in filters.get("nationalities", []):
-        query["bool"]["filter"].append({"term": {"Nationality.keyword": nat}})
-    for stat in filters.get("statuses", []):
-        query["bool"]["filter"].append({"term": {"Status.keyword": stat}})
-    return query
+    # Sidebar Filters
+    nationalities = sorted(list(set(d['Nationality'] for d in dossiers)))
+    statuses = sorted(list(set(d['Status'] for d in dossiers)))
+    selected_nationalities = st.sidebar.multiselect("Filter by Nationality", nationalities)
+    selected_statuses = st.sidebar.multiselect("Filter by Status", statuses)
 
-def display_search_results(results):
-    for res in results:
-        source = res['_source']
-        # Clean up the source for display
-        if 'embedding' in source:
-            del source['embedding']
+    def build_dossier_query(text, filters):
+        query = {"bool": {"must": [{"match_all": {}}], "filter": []}}
+        if text: query["bool"]["must"] = [{"multi_match": {"query": text, "fields": ["name", "notes"]}}]
+        for n in filters.get("nationalities", []): query["bool"]["filter"].append({"term": {"Nationality": n}})
+        for s in filters.get("statuses", []): query["bool"]["filter"].append({"term": {"Status": s}})
+        return query
 
-        with st.expander(f"**{source.get('name', 'N/A')}** (Score: {res['_score']:.2f})"):
-            st.json(source, expanded=False)
-
-col1, col2 = st.columns([1, 1])
-active_filters = {"nationalities": selected_nationalities, "statuses": selected_statuses}
-
-with col1:
-    st.header("Keyword Search")
-    keyword_query = st.text_input("Search notes and metadata...", key="keyword_search")
-    es_query = build_es_query(keyword_query, active_filters)
-    try:
-        response = es.search(index=INDEX_NAME, query=es_query)
+    col1, col2 = st.columns(2)
+    filters = {"nationalities": selected_nationalities, "statuses": selected_statuses}
+    with col1:
+        keyword_query = st.text_input("Keyword search in dossiers", key="dossier_keyword")
+        es_query = build_dossier_query(keyword_query, filters)
+        response = es.search(index="dossiers", query=es_query)
         st.write(f"{response['hits']['total']['value']} hits found.")
-        display_search_results(response['hits']['hits'])
-    except Exception as e: st.error(f"Keyword search error: {e}")
+        for res in response['hits']['hits']:
+            with st.expander(f"**{res['_source'].get('name')}** (Score: {res['_score']:.2f})"):
+                st.json({k: v for k, v in res['_source'].items() if k != 'embedding'})
 
-with col2:
-    st.header("Semantic Search")
-    semantic_query = st.text_input("Find conceptually similar notes...", key="semantic_search")
-    if semantic_query:
-        try:
-            query_embedding = embedding_model.encode(semantic_query).tolist()
-            response = es.search(index=INDEX_NAME, knn={"field": "embedding", "query_vector": query_embedding, "k": 5, "num_candidates": 10}, query=build_es_query("", active_filters))
+    with col2:
+        semantic_query = st.text_input("Semantic search in dossiers", key="dossier_semantic")
+        if semantic_query:
+            embedding = embedding_model.encode(semantic_query).tolist()
+            es_query = build_dossier_query("", filters)
+            response = es.search(index="dossiers", knn={"field": "embedding", "query_vector": embedding, "k": 5, "num_candidates": 10}, query=es_query)
             st.write(f"{len(response['hits']['hits'])} hits found.")
-            display_search_results(response['hits']['hits'])
-        except Exception as e: st.error(f"Semantic search error: {e}")
+            for res in response['hits']['hits']:
+                 with st.expander(f"**{res['_source'].get('name')}** (Similarity: {res['_score']:.2f})"):
+                    st.json({k: v for k, v in res['_source'].items() if k != 'embedding'})
 
-# --- Graph Section ---
-st.header("Professional Knowledge Graph")
-try:
-    nodes, edges = get_graph_data(neo_driver)
-    if nodes:
-        net = Network(height="1000px", width="100%", bgcolor="#0E1117", font_color="#D3D3D3", notebook=True, directed=True)
-        styles = {
-            "Person": {"shape": "icon", "icon": {"face": "'Font Awesome 5 Free'", "code": "\uf007", "size": 50, "color": "#B0C4DE"}},
-            "ORG": {"shape": "icon", "icon": {"face": "'Font Awesome 5 Free'", "code": "\uf1ad", "size": 50, "color": "#FFD700"}},
-            "GPE": {"shape": "icon", "icon": {"face": "'Font Awesome 5 Free'", "code": "\uf57d", "size": 40, "color": "#98FB98"}},
-            "default": {"shape": "dot", "size": 20, "color": "#808080"}
-        }
-        for node in nodes:
-            style = styles.get(node['node_label'], styles["default"])
-            del node['embedding'] # Ensure embedding is not in tooltip
-            tooltip = pd.DataFrame([node]).to_html(index=False).replace('"', "'")
-            net.add_node(str(node["id"]), label=node["label_text"], title=tooltip, **style)
-        for edge in edges:
-            net.add_edge(str(edge["from"]), str(edge["to"]), label=edge["label"], color={"inherit": "to", "opacity": 0.5})
-        net.set_options("""{"nodes": {"font": {"size": 14, "strokeWidth": 2, "strokeColor": "#000000"}}, "edges": {"arrows": {"to": {"enabled": true, "scaleFactor": 0.5}}, "font": {"size": 10, "align": "top"}, "smooth": {"type": "continuous"}},"physics": {"forceAtlas2Based": {"gravitationalConstant": -50, "centralGravity": 0.01, "springLength": 100, "springConstant": 0.08, "avoidOverlap": 0.5}, "minVelocity": 0.75, "solver": "forceAtlas2Based"}}""")
-        components.html(net.generate_html(notebook=False), height=1020)
+# --- Tab 2: Timeline Analysis ---
+with tab2:
+    st.header("Chronological Event Analysis")
+    if events:
+        df = pd.DataFrame(events)
+        df['date'] = pd.to_datetime(df['date'])
+        df_sorted = df.sort_values(by='date', ascending=False)
+
+        for _, row in df_sorted.iterrows():
+            with st.expander(f"**{row['date'].strftime('%Y-%m-%d')}: {row['location']}**"):
+                st.markdown(f"**Event ID:** {row['event_id']}")
+                st.markdown(f"**Summary:** {row['summary']}")
+                participant_names = [d['name'] for d in dossiers if d['id'] in row['participants']]
+                st.markdown(f"**Participants:** {', '.join(participant_names)}")
     else:
-        st.warning("No data in graph. Run ingest.py to populate.")
-except Exception as e:
-    st.error(f"Could not visualize graph: {e}")
-    st.warning("Ensure Neo4j container is running.")
+        st.warning("No event data found. Run the ingestion script.")
+
+# --- Tab 3: Graph Explorer ---
+with tab3:
+    st.header("Interactive Knowledge Graph")
+    try:
+        nodes, edges = get_graph_data(neo_driver)
+        if nodes:
+            net = Network(height="1000px", width="100%", bgcolor="#0E1117", font_color="white", notebook=True, directed=True)
+            styles = {
+                "Person": {"shape": "icon", "icon": {"face": "'Font Awesome 5 Free'", "code": "\uf007", "color": "#B0C4DE", "size": 50}},
+                "ORG": {"shape": "icon", "icon": {"face": "'Font Awesome 5 Free'", "code": "\uf1ad", "color": "#FFD700", "size": 50}},
+                "GPE": {"shape": "icon", "icon": {"face": "'Font Awesome 5 Free'", "code": "\uf57d", "color": "#98FB98", "size": 40}},
+                "Event": {"shape": "icon", "icon": {"face": "'Font Awesome 5 Free'", "code": "\uf073", "color": "#FF6347", "size": 30}}
+            }
+            for node in nodes:
+                style = styles.get(node['label'], {"shape": "dot", "size": 20})
+                tooltip = pd.DataFrame([node]).to_html(index=False).replace('"', "'")
+                net.add_node(str(node.get("id") or node.get("event_id")), label=node.get("name") or node.get("location"), title=tooltip, **style)
+            for edge in edges:
+                net.add_edge(str(edge["from"]), str(edge["to"]), label=edge["label"])
+            net.set_options("""{"physics": {"forceAtlas2Based": {"gravitationalConstant": -50, "centralGravity": 0.01, "springLength": 100, "springConstant": 0.08, "avoidOverlap": 0.5}, "minVelocity": 0.75, "solver": "forceAtlas2Based"}}""")
+            components.html(net.generate_html(notebook=False), height=1020)
+    except Exception as e:
+        st.error(f"Could not visualize graph: {e}")
+        st.warning("Ensure Neo4j container is running and data is ingested.")

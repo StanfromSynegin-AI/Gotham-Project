@@ -1,0 +1,86 @@
+[
+  {
+    "event_id": "EVT001",
+    "date": "2023-10-05",
+    "location": "Geneva",
+    "summary": "Observed meeting between Alexei Volkov and Klaus Richter. Discussion focused on 'dual-use' technology transfer agreements.",
+    "participants": [1, 2]
+  },
+  {
+    "event_id": "EVT002",
+    "date": "2023-11-20",
+    "location": "London",
+    "summary": "Dr. Aris Thorne and Dr. Evelyn Reed co-published a paper on advanced gene-editing techniques. The research was funded by a grant from 'RD Innovations', a subsidiary of Richter Dynamics.",
+    "participants": [2, 4, 10]
+  },
+  {
+    "event_id": "EVT003",
+    "date": "2024-01-15",
+    "location": "Baltimore",
+    "summary": "Anomalous cargo shipment logged by Sea Serpent Logistics. Cargo manifest was falsified. Marcus Vance oversaw the operation.",
+    "participants": [6]
+  },
+  {
+    "event_id": "EVT004",
+    "date": "2024-02-10",
+    "location": "Dubai",
+    "summary": "Jamal Al-Fayed facilitated a multi-million dollar transfer through Finanz Stability AG. Funds were traced to an account linked to Victor Orlov.",
+    "participants": [11, 9]
+  },
+  {
+    "event_id": "EVT005",
+    "date": "2024-03-22",
+    "location": "Washington D.C.",
+    "summary": "Isabella Cruz published her expose on Sea Serpent Logistics, citing an anonymous source from within the company's European operations.",
+    "participants": [8, 23]
+  },
+  {
+    "event_id": "EVT006",
+    "date": "2024-04-05",
+    "location": "Kyiv",
+    "summary": "A sophisticated cyberattack, attributed to the 'Black September' hacktivist group, targeted a European aerospace firm. Elena Petrova is the primary suspect.",
+    "participants": [5, 18]
+  },
+  {
+    "event_id": "EVT007",
+    "date": "2024-05-18",
+    "location": "Shanghai",
+    "summary": "Aethelred Industries and Richter Dynamics announced a joint venture for advanced materials research. Chen Lin and Freja Eriksen are leading their respective teams.",
+    "participants": [7, 12]
+  },
+  {
+    "event_id": "EVT008",
+    "date": "2024-06-30",
+    "location": "Rotterdam",
+    "summary": "Undercover agent Ben Carter reported a meeting between Marcus Vance and known fixer Liam O'Connell, discussing 'specialized transport' services.",
+    "participants": [23, 6, 13]
+  },
+  {
+    "event_id": "EVT009",
+    "date": "2024-07-12",
+    "location": "Tokyo",
+    "summary": "Yuki Tanaka's lab demonstrated a new autonomous drone prototype. The project was funded by a grant from a foundation controlled by Klaus Richter.",
+    "participants": [14, 2]
+  },
+  {
+    "event_id": "EVT010",
+    "date": "2024-08-01",
+    "location": "Mexico City",
+    "summary": "Maria Flores, a cartel lawyer, was observed in a meeting with representatives from Sea Serpent Logistics. The topic is believed to be narcotics trafficking routes.",
+    "participants": [19, 6]
+  },
+  {
+    "event_id": "EVT011",
+    "date": "2024-09-15",
+    "location": "Karachi",
+    "summary": "An illegal arms shipment containing European drone components was intercepted. The transaction was linked to dealer Samir Khan and financed through an account tied to Victor Orlov.",
+    "participants": [21, 9]
+  },
+  {
+    "event_id": "EVT012",
+    "date": "2024-10-28",
+    "location": "Vienna",
+    "summary": "Cultural attaché Eva Rostova, a former GRU colleague of Alexei Volkov, held a discreet meeting with an unidentified German national. Surveillance suggests it was Laura Brandt, CFO of Richter Dynamics.",
+    "participants": [22, 1, 25]
+  }
+]

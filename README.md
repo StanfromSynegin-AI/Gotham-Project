@@ -1,19 +1,21 @@
-# Mini-Gotham: Intelligence Dashboard
+# Mini-Gotham: Intelligence Analysis Platform
 
-This project is a professional-grade, personal-scale intelligence analysis platform. It ingests dossier-style data, builds an interconnected knowledge graph, and provides a sophisticated web interface for exploration, featuring advanced search and filtering capabilities.
+This project is a professional-grade, personal-scale intelligence analysis platform. It ingests dossier and event data to build an interconnected knowledge graph and provides a multi-faceted web interface for advanced exploration, temporal analysis, and link discovery.
 
-## Features
+## Core Features
 
--   **Professional Dark Theme UI:** A sleek, dark-themed Streamlit application designed for intelligence analysis.
--   **Robust JSON Data Format:** Uses a `dossiers.json` file for complex, reliable data handling, eliminating CSV parsing issues.
--   **Advanced Search Index:** Features a custom Elasticsearch analyzer for "perfect index searching," providing more accurate and intelligent results by understanding word variations.
--   **Palantir-like Filtering:** A sidebar in the UI allows for faceted search, enabling you to filter results by `Nationality` and `Status` to slice and dice the data.
--   **Rich Knowledge Graph:** Builds a detailed Neo4j graph with nuanced relationships (e.g., `CONTACT_WITH`, `FINANCIAL_TIE_TO`) extracted from the data.
--   **Sleek Graph Visualization:** A professionally designed network graph with custom icons, a muted color palette, and a clean, stable layout.
+-   **Multi-Faceted UI:** A tab-based Streamlit dashboard for different analytical tasks:
+    -   **Dossier Search:** A powerful search engine for entity records with keyword, semantic, and faceted filtering (by Nationality, Status).
+    -   **Timeline Analysis:** A chronological view of all intelligence events, allowing an analyst to track sequences of activity.
+    -   **Graph Explorer:** An interactive, professional-grade knowledge graph that visualizes entities, events, and their complex relationships.
+-   **Event-Centric Data Model:** Ingests both `dossiers.json` (for entities) and `events.json` (for time-based activities), creating a dynamic analytical environment.
+-   **Advanced Search:** Utilizes dedicated Elasticsearch indices with custom language analyzers for highly accurate and intelligent search results.
+-   **Rich, Interconnected Graph:** Builds a detailed Neo4j graph with `Person`, `ORG`, `GPE`, and `Event` nodes, linked by meaningful, timestamped relationships.
+-   **Professional Aesthetic:** Features a sleek dark theme, a clean layout, and sophisticated graph visualizations using custom icons.
 
 ## Foolproof Setup and Execution
 
-This project includes an automated script to ensure a clean, error-free setup.
+The project includes an automated script to ensure a clean, error-free setup.
 
 ### Prerequisites
 
@@ -34,35 +36,23 @@ Open your terminal, navigate to the project folder, and run the setup script:
 
 **For Windows (Command Prompt or PowerShell):**
 
-There is no script for Windows, but you can run the following commands one by one in your terminal in the project folder. This achieves the same result.
+There is no script for Windows, but you can run the following commands one by one in your terminal. This achieves the same result.
 
 ```powershell
-# Stop and delete old containers and their data
+# 1. Stop and delete old containers and their data
 docker compose down -v
 
-# Start fresh containers
+# 2. Start fresh containers
 docker compose up -d
 
-# Install Python libraries
+# 3. Install Python libraries
 pip install -r requirements.txt
 
-# Run the data ingestion
+# 4. Run the data ingestion
 python ingest.py
 
-# Launch the app
+# 5. Launch the app
 streamlit run app.py
 ```
 
 After running the script or the commands, the application will be available at **`http://localhost:8501`**.
-
----
-
-### Manual Steps (for reference)
-
-If you prefer to run the steps manually, here they are:
-
-1.  **Reset Environment:** `docker compose down -v`
-2.  **Start Services:** `docker compose up -d`
-3.  **Install Dependencies:** `pip install -r requirements.txt`
-4.  **Ingest Data:** `python ingest.py`
-5.  **Run App:** `streamlit run app.py`
