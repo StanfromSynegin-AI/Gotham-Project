@@ -1,64 +1,64 @@
 import json
 import logging
 import re
+import time
 from itertools import permutations
 import spacy
 from elasticsearch import Elasticsearch
-from neo4j import GraphDatabase
-from rapidfuzz import process, fuzz
+from neo4j import GraphDatabase, exceptions
 from sentence_transformers import SentenceTransformer
 
 # --- Setup ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # --- Load Models ---
-def load_spacy_model():
-    try:
-        return spacy.load('en_core_web_sm')
-    except OSError:
-        logging.info("Downloading spaCy model 'en_core_web_sm'...")
-        from spacy.cli import download
-        download('en_core_web_sm')
-        return spacy.load('en_core_web_sm')
-
-def load_embedding_model():
-    return SentenceTransformer('all-MiniLM-L6-v2')
-
-nlp = load_spacy_model()
-embedding_model = load_embedding_model()
+nlp = spacy.load('en_core_web_sm')
+embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
 
 # --- Connections ---
-es = Elasticsearch('http://localhost:9200')
+es = Elasticsearch(
+    'http://localhost:9200',
+    headers={"Accept": "application/vnd.elasticsearch+json; compatible-with=8"},
+    request_timeout=30
+)
 neo_driver = GraphDatabase.driver('bolt://localhost:7687', auth=('neo4j', 'neo4jpassword'))
+
+# --- Bulletproof Wait Function ---
+def wait_for_services():
+    logging.info("Waiting for services to become available...")
+    # Wait for Elasticsearch
+    for _ in range(30):
+        try:
+            if es.ping():
+                logging.info("Elasticsearch is ready.")
+                break
+        except Exception:
+            time.sleep(2)
+    else:
+        raise ConnectionError("Could not connect to Elasticsearch after 60 seconds.")
+
+    # Wait for Neo4j
+    for _ in range(30):
+        try:
+            with neo_driver.session() as session:
+                session.run("RETURN 1")
+            logging.info("Neo4j is ready.")
+            break
+        except exceptions.ServiceUnavailable:
+            time.sleep(2)
+    else:
+        raise ConnectionError("Could not connect to Neo4j after 60 seconds.")
 
 # --- Elasticsearch Functions ---
 def setup_es_indices():
-    # Clean slate
     es.indices.delete(index='_all', ignore_unavailable=True)
-    logging.info("Cleared old Elasticsearch indices.")
-
-    # Dossier Index
     dossier_index = "dossiers"
-    dossier_mappings = {
-        "properties": {
-            "name": {"type": "text"}, "notes": {"type": "text"},
-            "Nationality": {"type": "keyword"}, "Status": {"type": "keyword"},
-            "DOB": {"type": "date"}, "embedding": {"type": "dense_vector", "dims": 384}
-        }
-    }
+    dossier_mappings = {"properties": {"embedding": {"type": "dense_vector", "dims": 384}}}
     es.indices.create(index=dossier_index, mappings=dossier_mappings)
-    logging.info(f"Created '{dossier_index}' index.")
 
-    # Event Index
     event_index = "events"
-    event_mappings = {
-        "properties": {
-            "summary": {"type": "text"}, "location": {"type": "keyword"},
-            "date": {"type": "date"}, "embedding": {"type": "dense_vector", "dims": 384}
-        }
-    }
+    event_mappings = {"properties": {"embedding": {"type": "dense_vector", "dims": 384}}}
     es.indices.create(index=event_index, mappings=event_mappings)
-    logging.info(f"Created '{event_index}' index.")
 
 def index_item(index, item, text_field):
     embedding = embedding_model.encode(item[text_field]).tolist()
@@ -66,51 +66,40 @@ def index_item(index, item, text_field):
     es.index(index=index, id=item.get('id') or item.get('event_id'), document=document)
 
 # --- Neo4j Functions ---
-def get_existing_entities(tx, label):
-    result = tx.run(f"MATCH (e:{label}) RETURN e.id AS id, e.name AS name")
-    return {record["name"]: record["id"] for record in result}
+def setup_neo4j(session):
+    session.run("MATCH (n) DETACH DELETE n")
+    for label in ["Person", "Event", "ORG", "GPE"]:
+        session.run(f"CREATE CONSTRAINT IF NOT EXISTS FOR (n:{label}) REQUIRE n.id IS UNIQUE")
 
-def resolve_and_upsert_entity(tx, label, name, existing_entities):
-    # Simplified resolution
-    ent_id = str(hash(name.lower()))
-    tx.run(f"MERGE (e:{label} {{id: $id}}) SET e.name = $name", id=ent_id, name=name)
-    return ent_id
+def ingest_dossiers(session, dossiers):
+    for dossier in dossiers:
+        index_item("dossiers", dossier, 'notes')
+        props = {k: v for k, v in dossier.items() if v}
+        session.run("MERGE (p:Person {id: $id}) SET p += $props", id=str(dossier['id']), props=props)
 
-def create_relationship(tx, source_label, source_id, target_label, target_id, rel_type, properties=None):
-    props_str = f" {{ {', '.join([f'{k}: ${k}' for k in properties])} }}" if properties else ""
-    query = (f"MATCH (a:{source_label} {{id: $source_id}}), (b:{target_label} {{id: $target_id}}) "
-             f"MERGE (a)-[r:{rel_type}{props_str}]->(b)")
-    tx.run(query, source_id=str(source_id), target_id=str(target_id), **(properties or {}))
+def ingest_events(session, events):
+    for event in events:
+        index_item("events", event, 'summary')
+        props = {k: v for k, v in event.items() if k != 'participants'}
+        session.run("MERGE (e:Event {id: $id}) SET e += $props", id=event['event_id'], props=props)
+        for person_id in event['participants']:
+            session.run(
+                "MATCH (p:Person {id: $p_id}), (e:Event {id: $e_id}) "
+                "MERGE (p)-[r:PARTICIPATED_IN]->(e) SET r.date = $date",
+                p_id=str(person_id), e_id=event['event_id'], date=event["date"]
+            )
 
 # --- Main Execution ---
 if __name__ == '__main__':
+    wait_for_services()
     setup_es_indices()
 
     with open('dossiers.json', 'r') as f: dossiers = json.load(f)
     with open('events.json', 'r') as f: events = json.load(f)
 
     with neo_driver.session() as session:
-        # Clear old graph data
-        session.execute_write(lambda tx: tx.run("MATCH (n) DETACH DELETE n"))
-        logging.info("Cleared old Neo4j graph data.")
+        setup_neo4j(session)
+        ingest_dossiers(session, dossiers)
+        ingest_events(session, events)
 
-        # Ingest Dossiers (Entities)
-        for dossier in dossiers:
-            index_item("dossiers", dossier, 'notes')
-            dossier_props = {k: v for k, v in dossier.items() if v}
-            session.execute_write(lambda tx: tx.run("MERGE (p:Person {id: $id}) SET p += $props", id=str(dossier['id']), props=dossier_props))
-        logging.info("Ingested all dossiers.")
-
-        # Ingest Events and Relationships
-        for event in events:
-            index_item("events", event, 'summary')
-            event_id = event['event_id']
-            event_props = {k: v for k, v in event.items() if k != 'participants'}
-            session.execute_write(lambda tx: tx.run("MERGE (e:Event {id: $id}) SET e += $props", id=event_id, props=event_props))
-
-            # Link participants to the event
-            for person_id in event['participants']:
-                create_relationship(session, 'Person', str(person_id), 'Event', event_id, 'PARTICIPATED_IN', properties={"date": event["date"]})
-        logging.info("Ingested all events and linked participants.")
-
-    logging.info("Data ingestion complete.")
+    logging.info("Data ingestion complete. The system is ready.")
