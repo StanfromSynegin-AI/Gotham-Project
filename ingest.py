@@ -12,7 +12,6 @@ from sentence_transformers import SentenceTransformer
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # --- Load Models ---
-@st.cache_resource
 def load_spacy_model():
     try:
         return spacy.load('en_core_web_sm')
@@ -22,7 +21,6 @@ def load_spacy_model():
         download('en_core_web_sm')
         return spacy.load('en_core_web_sm')
 
-@st.cache_resource
 def load_embedding_model():
     return SentenceTransformer('all-MiniLM-L6-v2')
 
