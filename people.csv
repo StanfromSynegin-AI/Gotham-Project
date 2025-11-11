@@ -1,21 +1,26 @@
-id,name,notes
-1,Alice,Alice is a senior software engineer at Acme Corp. She lives in New York and is an expert in cloud computing.
-2,Bob,Bob is a project manager at Globex Corporation. He is interested in machine learning and previously worked at Stark Industries. Bob lives in San Francisco.
-3,Charlie,Charlie is a data scientist from Chicago. He is a fan of the Giants and works for the tech division of Wayne Enterprises.
-4,Diana,Diana is the lead designer at Cyberdyne Systems and lives in Los Angeles. She frequently collaborates with engineers from Stark Industries.
-5,Ethan,Ethan is a marketing specialist at Oscorp. He organized a tech conference in Austin last year.
-6,Fiona,Fiona is a legal counsel for Umbrella Corporation and is based in London. She has a background in intellectual property.
-7,George,George is a junior developer at InGen. He lives in San Diego and contributes to open-source projects.
-8,Hannah,Hannah is a product manager at Weyland-Yutani Corp. She attended a leadership summit in Berlin.
-9,Ian,Ian is a cybersecurity analyst for Blue Sun Corporation. He lives in Seattle and is an expert on network security.
-10,Jane,Jane is a data analyst at Tyrell Corporation. She is from Boston and has experience with data visualization.
-11,Kevin,Kevin works as a financial analyst at Virtucon. He lives in Miami and is a CFA charterholder.
-12,Laura,Laura is a UX researcher at Omni Consumer Products. She is based in Detroit and focuses on user-centric design.
-13,Michael,Michael is a senior executive at Hooli, living in Palo Alto. He previously held a position at Globex Corporation.
-14,Nora,Nora is a QA engineer at Buy n Large. She is from Portland and is an advocate for test automation.
-15,Oscar,Oscar is a systems administrator at Massive Dynamic. He lives in Houston and is certified in network infrastructure.
-16,Penny,Penny is a human resources manager at Veridian Dynamics. She is based in Denver and focuses on talent acquisition.
-17,Quentin,Quentin is a research scientist at Aperture Science. He lives in Minneapolis and specializes in quantum physics.
-18,Rachel,Rachel is a technical writer at Sirius Cybernetics Corporation. She is from Atlanta and creates documentation for complex systems.
-19,Steve,Steve works in logistics for the Zorin Corporation in Philadelphia. He has optimized supply chains for various industries.
-20,Tina,Tina is a business development manager at Rekall, based in Toronto. She is focused on market expansion.
+id,name,DOB,Nationality,Status,notes
+1,Alexei Volkov,1975-03-15,Russian,Active,"Subject is a former GRU officer, now operating as a 'security consultant' through his firm, Argus Security, based in Cyprus. Observed meeting with Klaus Richter in Geneva on 2023-10-05. Believed to facilitate sensitive technology transfers."
+2,Klaus Richter,1968-09-21,German,Active,"CEO of Richter Dynamics, a Berlin-based firm specializing in 'clean energy solutions'. Financial analysis suggests significant R&D in restricted aerospace technologies. Subsidiary, 'RD Innovations', has funded OmniGen labs."
+3,Sofia Rossi,1982-11-02,Italian,Watchlist,"Rome-based art dealer. Her gallery is suspected to be a front for laundering funds for various international clients. Has financial ties to Finanz Stability AG, a Swiss bank. Phone records show contact with Alexei Volkov."
+4,Dr. Aris Thorne,1979-01-30,British,Active,"Prominent biochemist, previously with the UK's Porton Down, now director at OmniGen, a private research lab in London. OmniGen's work on gene-editing is highly advanced. Subject is under surveillance."
+5,Elena Petrova,1990-05-12,Ukrainian,Watchlist,"Lead cybersecurity analyst for a Kyiv-based tech firm. Previously associated with the hacktivist group 'Black September'. Was a contractor for a network security audit at Richter Dynamics."
+6,Marcus Vance,1977-08-16,American,Active,"Logistics coordinator for Sea Serpent Logistics, a global shipping company based in Baltimore. The company has been flagged for anomalous shipping routes in the South China Sea. Brother of Dr. Aris Thorne."
+7,Chen Lin,1985-06-25,Chinese,Active,"Materials scientist at Aethelred Industries in Shanghai. Aethelred has a public-facing partnership with Richter Dynamics on advanced polymer development. Subject is a person of interest."
+8,Isabella Cruz,1988-02-14,American,Active,"Investigative journalist based in Washington D.C. Published an expose on Sea Serpent Logistics. Travel records indicate a recent trip to London, where she met an undisclosed source."
+9,Victor Orlov,1976-12-03,Russian,Active,"An associate of Alexei Volkov and the on-site manager for Argus Security in Limassol, Cyprus. Handles operational logistics and recruitment."
+10,Dr. Evelyn Reed,1981-07-22,American,Active,"Senior geneticist at OmniGen, recruited from a US-based biotech firm. She is a close colleague of Dr. Aris Thorne and specializes in CRISPR technology."
+11,Jamal Al-Fayed,1973-04-18,Egyptian,Watchlist,"Dubai-based financier. Believed to be a key financial intermediary for multiple state-sponsored groups. Uses a complex network of shell companies, including a holding company that owns Finanz Stability AG."
+12,Freja Eriksen,1989-09-01,Danish,Active,"Lead engineer at Richter Dynamics' advanced propulsion division. Formerly with the European Space Agency. Her work is highly classified."
+13,Liam O'Connell,1965-03-17,Irish,Inactive,"Former IRA operative, now a 'fixer' based in Dublin. Known contact of Marcus Vance. Believed to arrange discreet transportation for sensitive cargo."
+14,Yuki Tanaka,1992-12-20,Japanese,Active,"Robotics expert at a Tokyo university. Has received multiple grants from a foundation secretly controlled by Klaus Richter. Her research has potential military applications."
+15,Nadia Petrova,1993-01-28,Ukrainian,Unknown,"Sister of Elena Petrova. A student at the University of Warsaw. No known illicit activities, but maintains regular contact with her sister."
+16,Simon Wexler,1969-10-11,American,Watchlist,"Lobbyist in Washington D.C. Represents several foreign technology firms, including a subsidiary of Aethelred Industries. Has been flagged for FARA violations."
+17,Anya Sharma,1984-07-09,Indian,Active,"AI researcher in Bangalore. Her startup, 'Cognition AI', was recently acquired by a shell company traced back to Richter Dynamics. She now works on autonomous drone guidance systems."
+18,David Chen,1983-05-30,American,Active,"Cybersecurity analyst with the FBI, based in San Francisco. He is the lead investigator on the 'Black September' case and has expressed interest in Elena Petrova."
+19,Maria Flores,1980-11-25,Mexican,Active,"Cartel lawyer based in Mexico City. Has been observed meeting with representatives from Sea Serpent Logistics, suggesting a potential partnership in narcotics trafficking."
+20,Leo Martin,1972-02-28,French,Active,"Interpol agent based in Lyon, France. He is coordinating the international investigation into Alexei Volkov's network and has requested intel on Sofia Rossi."
+21,Samir Khan,1988-08-01,Pakistani,Watchlist,"Karachi-based arms dealer. Has been linked to the sale of restricted European-made drone components. Financial records show payments originating from an account linked to Victor Orlov."
+22,Eva Rostova,1978-06-15,Russian,Inactive,"Former colleague of Alexei Volkov at the GRU. Now a cultural attaché in Vienna, Austria. Maintains discreet contact with Volkov."
+23,Ben Carter,1991-04-10,American,Active,"Undercover agent for the CIA. Currently embedded within Sea Serpent Logistics' European operations in Rotterdam. He is the source for journalist Isabella Cruz."
+24,Dr. Ivan Petrov,1965-01-20,Russian,Active,"Head of a research institute in Moscow. Publicly denounces OmniGen's work, but intelligence suggests a covert channel of communication with Dr. Aris Thorne."
+25,Laura Brandt,1970-12-01,German,Active,"Chief Financial Officer at Richter Dynamics. She is responsible for the complex financial structures that obscure the company's military R&D funding. Works closely with Klaus Richter in Berlin."
