@@ -1,7 +1,7 @@
 pandas
 spacy
 neo4j
-elasticsearch~=8.8.0
+elasticsearch==8.8.0
 streamlit
 pyvis
 rapidfuzz
