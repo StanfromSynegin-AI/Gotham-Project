@@ -50,8 +50,8 @@ def get_filter_options():
 
 # --- Connections & Models ---
 embedding_model = load_embedding_model()
-es = Elasticsearch('http://localhost:9200')
-neo_driver = GraphDatabase.driver('bolt://localhost:7687', auth=('neo4j', 'neo4jpassword'))
+es = Elasticsearch('http://localhost:9200', headers={"Accept": "application/vnd.elasticsearch+json; compatible-with=8"})
+neo_driver = GraphDatabase.driver('bolt://localhost:7687', auth=('neoj', 'neo4jpassword'))
 INDEX_NAME = "intelligence_dossiers"
 
 # --- Sidebar Filters ---
