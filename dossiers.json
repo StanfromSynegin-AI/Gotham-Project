@@ -1,0 +1,202 @@
+[
+  {
+    "id": 1,
+    "name": "Alexei Volkov",
+    "DOB": "1975-03-15",
+    "Nationality": "Russian",
+    "Status": "Active",
+    "notes": "Subject is a former GRU officer, now operating as a 'security consultant' through his firm, Argus Security, based in Cyprus. Observed meeting with Klaus Richter in Geneva on 2023-10-05. Believed to facilitate sensitive technology transfers."
+  },
+  {
+    "id": 2,
+    "name": "Klaus Richter",
+    "DOB": "1968-09-21",
+    "Nationality": "German",
+    "Status": "Active",
+    "notes": "CEO of Richter Dynamics, a Berlin-based firm specializing in 'clean energy solutions'. Financial analysis suggests significant R&D in restricted aerospace technologies. Subsidiary, 'RD Innovations', has funded OmniGen labs."
+  },
+  {
+    "id": 3,
+    "name": "Sofia Rossi",
+    "DOB": "1982-11-02",
+    "Nationality": "Italian",
+    "Status": "Watchlist",
+    "notes": "Rome-based art dealer. Her gallery is suspected to be a front for laundering funds for various international clients. Has financial ties to Finanz Stability AG, a Swiss bank. Phone records show contact with Alexei Volkov."
+  },
+  {
+    "id": 4,
+    "name": "Dr. Aris Thorne",
+    "DOB": "1979-01-30",
+    "Nationality": "British",
+    "Status": "Active",
+    "notes": "Prominent biochemist, previously with the UK's Porton Down, now director at OmniGen, a private research lab in London. OmniGen's work on gene-editing is highly advanced. Subject is under surveillance."
+  },
+  {
+    "id": 5,
+    "name": "Elena Petrova",
+    "DOB": "1990-05-12",
+    "Nationality": "Ukrainian",
+    "Status": "Watchlist",
+    "notes": "Lead cybersecurity analyst for a Kyiv-based tech firm. Previously associated with the hacktivist group 'Black September'. Was a contractor for a network security audit at Richter Dynamics."
+  },
+  {
+    "id": 6,
+    "name": "Marcus Vance",
+    "DOB": "1977-08-16",
+    "Nationality": "American",
+    "Status": "Active",
+    "notes": "Logistics coordinator for Sea Serpent Logistics, a global shipping company based in Baltimore. The company has been flagged for anomalous shipping routes in the South China Sea. Brother of Dr. Aris Thorne."
+  },
+  {
+    "id": 7,
+    "name": "Chen Lin",
+    "DOB": "1985-06-25",
+    "Nationality": "Chinese",
+    "Status": "Active",
+    "notes": "Materials scientist at Aethelred Industries in Shanghai. Aethelred has a public-facing partnership with Richter Dynamics on advanced polymer development. Subject is a person of interest."
+  },
+  {
+    "id": 8,
+    "name": "Isabella Cruz",
+    "DOB": "1988-02-14",
+    "Nationality": "American",
+    "Status": "Active",
+    "notes": "Investigative journalist based in Washington D.C. Published an expose on Sea Serpent Logistics. Travel records indicate a recent trip to London, where she met an undisclosed source."
+  },
+  {
+    "id": 9,
+    "name": "Victor Orlov",
+    "DOB": "1976-12-03",
+    "Nationality": "Russian",
+    "Status": "Active",
+    "notes": "An associate of Alexei Volkov and the on-site manager for Argus Security in Limassol, Cyprus. Handles operational logistics and recruitment."
+  },
+  {
+    "id": 10,
+    "name": "Dr. Evelyn Reed",
+    "DOB": "1981-07-22",
+    "Nationality": "American",
+    "Status": "Active",
+    "notes": "Senior geneticist at OmniGen, recruited from a US-based biotech firm. She is a close colleague of Dr. Aris Thorne and specializes in CRISPR technology."
+  },
+  {
+    "id": 11,
+    "name": "Jamal Al-Fayed",
+    "DOB": "1973-04-18",
+    "Nationality": "Egyptian",
+    "Status": "Watchlist",
+    "notes": "Dubai-based financier. Believed to be a key financial intermediary for multiple state-sponsored groups. Uses a complex network of shell companies, including a holding company that owns Finanz Stability AG."
+  },
+  {
+    "id": 12,
+    "name": "Freja Eriksen",
+    "DOB": "1989-09-01",
+    "Nationality": "Danish",
+    "Status": "Active",
+    "notes": "Lead engineer at Richter Dynamics' advanced propulsion division. Formerly with the European Space Agency. Her work is highly classified."
+  },
+  {
+    "id": 13,
+    "name": "Liam O'Connell",
+    "DOB": "1965-03-17",
+    "Nationality": "Irish",
+    "Status": "Inactive",
+    "notes": "Former IRA operative, now a 'fixer' based in Dublin. Known contact of Marcus Vance. Believed to arrange discreet transportation for sensitive cargo."
+  },
+  {
+    "id": 14,
+    "name": "Yuki Tanaka",
+    "DOB": "1992-12-20",
+    "Nationality": "Japanese",
+    "Status": "Active",
+    "notes": "Robotics expert at a Tokyo university. Has received multiple grants from a foundation secretly controlled by Klaus Richter. Her research has potential military applications."
+  },
+  {
+    "id": 15,
+    "name": "Nadia Petrova",
+    "DOB": "1993-01-28",
+    "Nationality": "Ukrainian",
+    "Status": "Unknown",
+    "notes": "Sister of Elena Petrova. A student at the University of Warsaw. No known illicit activities, but maintains regular contact with her sister."
+  },
+  {
+    "id": 16,
+    "name": "Simon Wexler",
+    "DOB": "1969-10-11",
+    "Nationality": "American",
+    "Status": "Watchlist",
+    "notes": "Lobbyist in Washington D.C. Represents several foreign technology firms, including a subsidiary of Aethelred Industries. Has been flagged for FARA violations."
+  },
+  {
+    "id": 17,
+    "name": "Anya Sharma",
+    "DOB": "1984-07-09",
+    "Nationality": "Indian",
+    "Status": "Active",
+    "notes": "AI researcher in Bangalore. Her startup, 'Cognition AI', was recently acquired by a shell company traced back to Richter Dynamics. She now works on autonomous drone guidance systems."
+  },
+  {
+    "id": 18,
+    "name": "David Chen",
+    "DOB": "1983-05-30",
+    "Nationality": "American",
+    "Status": "Active",
+    "notes": "Cybersecurity analyst with the FBI, based in San Francisco. He is the lead investigator on the 'Black September' case and has expressed interest in Elena Petrova."
+  },
+  {
+    "id": 19,
+    "name": "Maria Flores",
+    "DOB": "1980-11-25",
+    "Nationality": "Mexican",
+    "Status": "Active",
+    "notes": "Cartel lawyer based in Mexico City. Has been observed meeting with representatives from Sea Serpent Logistics, suggesting a potential partnership in narcotics trafficking."
+  },
+  {
+    "id": 20,
+    "name": "Leo Martin",
+    "DOB": "1972-02-28",
+    "Nationality": "French",
+    "Status": "Active",
+    "notes": "Interpol agent based in Lyon, France. He is coordinating the international investigation into Alexei Volkov's network and has requested intel on Sofia Rossi."
+  },
+  {
+    "id": 21,
+    "name": "Samir Khan",
+    "DOB": "1988-08-01",
+    "Nationality": "Pakistani",
+    "Status": "Watchlist",
+    "notes": "Karachi-based arms dealer. Has been linked to the sale of restricted European-made drone components. Financial records show payments originating from an account linked to Victor Orlov."
+  },
+  {
+    "id": 22,
+    "name": "Eva Rostova",
+    "DOB": "1978-06-15",
+    "Nationality": "Russian",
+    "Status": "Inactive",
+    "notes": "Former colleague of Alexei Volkov at the GRU. Now a cultural attaché in Vienna, Austria. Maintains discreet contact with Volkov."
+  },
+  {
+    "id": 23,
+    "name": "Ben Carter",
+    "DOB": "1991-04-10",
+    "Nationality": "American",
+    "Status": "Active",
+    "notes": "Undercover agent for the CIA. Currently embedded within Sea Serpent Logistics' European operations in Rotterdam. He is the source for journalist Isabella Cruz."
+  },
+  {
+    "id": 24,
+    "name": "Dr. Ivan Petrov",
+    "DOB": "1965-01-20",
+    "Nationality": "Russian",
+    "Status": "Active",
+    "notes": "Head of a research institute in Moscow. Publicly denounces OmniGen's work, but intelligence suggests a covert channel of communication with Dr. Aris Thorne."
+  },
+  {
+    "id": 25,
+    "name": "Laura Brandt",
+    "DOB": "1970-12-01",
+    "Nationality": "German",
+    "Status": "Active",
+    "notes": "Chief Financial Officer at Richter Dynamics. She is responsible for the complex financial structures that obscure the company's military R&D funding. Works closely with Klaus Richter in Berlin."
+  }
+]

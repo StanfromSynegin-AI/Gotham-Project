@@ -1,64 +1,68 @@
-# Mini-Gotham
+# Mini-Gotham: Intelligence Dashboard
 
-This project is a personal-scale recreation of a data ingestion, analysis, and visualization platform. It allows you to ingest structured data, build a knowledge graph with resolved entities, and explore it through a web interface that supports both keyword and semantic search.
+This project is a professional-grade, personal-scale intelligence analysis platform. It ingests dossier-style data, builds an interconnected knowledge graph, and provides a sophisticated web interface for exploration, featuring advanced search and filtering capabilities.
 
 ## Features
 
--   **Dockerized Services:** Elasticsearch, Neo4j, and other services are managed with Docker Compose.
--   **Robust Data Ingestion:** The ingestion script (`ingest.py`) processes CSV data, extracts entities with spaCy, and performs entity resolution using fuzzy string matching to avoid duplicates.
--   **Rich Knowledge Graph:** Creates a graph of entities (people, organizations, locations) and their relationships (e.g., `WORKS_FOR`, `LIVES_AT`).
--   **Semantic Search:** Generates vector embeddings for text data, enabling search based on meaning, not just keywords.
--   **Interactive UI:** A Streamlit application (`app.py`) provides a user-friendly interface for searching and visualizing the knowledge graph.
+-   **Professional Dark Theme UI:** A sleek, dark-themed Streamlit application designed for intelligence analysis.
+-   **Robust JSON Data Format:** Uses a `dossiers.json` file for complex, reliable data handling, eliminating CSV parsing issues.
+-   **Advanced Search Index:** Features a custom Elasticsearch analyzer for "perfect index searching," providing more accurate and intelligent results by understanding word variations.
+-   **Palantir-like Filtering:** A sidebar in the UI allows for faceted search, enabling you to filter results by `Nationality` and `Status` to slice and dice the data.
+-   **Rich Knowledge Graph:** Builds a detailed Neo4j graph with nuanced relationships (e.g., `CONTACT_WITH`, `FINANCIAL_TIE_TO`) extracted from the data.
+-   **Sleek Graph Visualization:** A professionally designed network graph with custom icons, a muted color palette, and a clean, stable layout.
 
-## Setup and Usage
+## Foolproof Setup and Execution
+
+This project includes an automated script to ensure a clean, error-free setup.
 
 ### Prerequisites
 
--   Docker and Docker Compose installed on your machine.
--   Python 3.7+ and `pip`.
+-   **Docker** and **Docker Compose**
+-   **Python** (3.7+)
 
-### 1. Install Dependencies
+### Automated Setup (Recommended)
 
-Install the required Python libraries using the `requirements.txt` file:
+This is the easiest and most reliable way to run the project.
+
+**For Linux and macOS:**
+
+Open your terminal, navigate to the project folder, and run the setup script:
 
 ```bash
-pip install -r requirements.txt
+./reset_and_run.sh
 ```
 
-The spaCy English model will be downloaded automatically by the ingestion script if it's not already installed.
+**For Windows (Command Prompt or PowerShell):**
 
-### 2. Start the Services
+There is no script for Windows, but you can run the following commands one by one in your terminal in the project folder. This achieves the same result.
 
-Launch the Elasticsearch and Neo4j containers:
+```powershell
+# Stop and delete old containers and their data
+docker compose down -v
 
-```bash
+# Start fresh containers
 docker compose up -d
-```
 
-*Note: If `docker compose` doesn't work, you may need to use the older `docker-compose` command.*
+# Install Python libraries
+pip install -r requirements.txt
 
-### 3. Ingest the Data
-
-Run the ingestion script. This will process the `people.csv` file, generate embeddings, and load the data into Elasticsearch and Neo4j.
-
-```bash
+# Run the data ingestion
 python ingest.py
-```
 
-### 4. Launch the Application
-
-Start the Streamlit web application:
-
-```bash
+# Launch the app
 streamlit run app.py
 ```
 
-Open your browser to `http://localhost:8501` to use the application. You'll find separate inputs for keyword and semantic search, as well as the interactive knowledge graph.
+After running the script or the commands, the application will be available at **`http://localhost:8501`**.
 
-### 5. Shutting Down
+---
 
-To stop the Docker containers, run:
+### Manual Steps (for reference)
 
-```bash
-docker compose down
-```
+If you prefer to run the steps manually, here they are:
+
+1.  **Reset Environment:** `docker compose down -v`
+2.  **Start Services:** `docker compose up -d`
+3.  **Install Dependencies:** `pip install -r requirements.txt`
+4.  **Ingest Data:** `python ingest.py`
+5.  **Run App:** `streamlit run app.py`
