@@ -29,9 +29,10 @@ neo_driver = GraphDatabase.driver('bolt://localhost:7687', auth=('neo4j', 'neo4j
 # --- Elasticsearch Functions ---
 def create_advanced_es_index():
     index_name = "intelligence_dossiers"
-    # Delete old indices for a clean slate
-    if es.indices.exists(index="docs"): es.indices.delete(index="docs")
-    if es.indices.exists(index=index_name): es.indices.delete(index=index_name)
+    # Delete old indices for a clean slate using a more robust method
+    es.indices.delete(index="docs", ignore_unavailable=True)
+    es.indices.delete(index=index_name, ignore_unavailable=True)
+    logging.info("Cleared any old indices for a fresh start.")
 
     settings = {
         "analysis": {
